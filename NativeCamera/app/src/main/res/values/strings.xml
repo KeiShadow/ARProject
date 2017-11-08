@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Aruco Detection</string>
+    <string name="calibCamera">Kalibrace Kamry</string>
+    <string name="action_settings">Tools</string>
+    <string name="record_button">Record</string>
+
+    <string name="title_activity_fullscreen">DetectionActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="detekce">Detekce</string>
+    <string name="create_marker">Vytvoření markeru</string>
+</resources>
