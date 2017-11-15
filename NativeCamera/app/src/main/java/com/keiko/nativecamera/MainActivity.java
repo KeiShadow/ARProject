@@ -1,6 +1,7 @@
 package com.keiko.nativecamera;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +9,16 @@ import android.widget.Button;
 
 
 public class MainActivity extends AppCompatActivity{
-    Button detekce,calibrate;
+    Button detekce,calibrate,createMarker,techAct;
+
+    String saveMarker = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Calib/";
+
+
+    static {
+        System.loadLibrary("native-lib");
+        System.loadLibrary("opencv_java3");
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +29,8 @@ public class MainActivity extends AppCompatActivity{
 
         detekce=(Button)findViewById(R.id.bt_Det);
         calibrate=(Button)findViewById(R.id.bt_Calib);
+        createMarker=(Button)findViewById(R.id.bt_Create);
+
 
         detekce.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +45,13 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Intent calib = new Intent(MainActivity.this,CalibrationActivity.class);
                 startActivity(calib);
+            }
+        });
+        createMarker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateMarker cm = new CreateMarker();
+               cm.createMarker(saveMarker);
             }
         });
 

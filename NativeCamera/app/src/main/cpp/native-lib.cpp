@@ -4,10 +4,12 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/aruco.hpp>
 
+
 #include <thread>
 
 #include <android/log.h>
 #include <opencv2/highgui.hpp>
+
 
 
 
@@ -17,10 +19,12 @@ using namespace aruco;
 
 extern "C" {
 
+bool estimatePose= true;
+bool showRejected = false;
+bool detectorParametrs = true;
 
 /*Camera Calib*/
-static bool saveCameraParams(const string &filename, Size imageSize, float aspectRatio, int flags,
-                             const Mat &cameraMatrix, const Mat &distCoeffs, double totalAvgErr) {
+static bool saveCameraParams(const string &filename, Size imageSize, float aspectRatio, int flags, const Mat &cameraMatrix, const Mat &distCoeffs, double totalAvgErr) {
     FileStorage fs(filename, FileStorage::WRITE);
     if(!fs.isOpened()){
         __android_log_print(ANDROID_LOG_ERROR, "SaveCameraParams", "Not Opened");
@@ -93,7 +97,6 @@ void drawCube(InputOutputArray _image, InputArray _cameraMatrix, InputArray _dis
     points.push_back(Point3f(halfSize, halfSize, 0.04));
     points.push_back(Point3f(halfSize, -halfSize, 0.04));
 
-
     vector< Point2f > imagePoints;
     projectPoints(points, _rvec, _tvec, _cameraMatrix, _distCoeffs, imagePoints);
 
@@ -102,7 +105,6 @@ void drawCube(InputOutputArray _image, InputArray _cameraMatrix, InputArray _dis
         line(_image, imagePoints[i], imagePoints[(i+1)%4], Scalar(0, 0, 255), 2);
         line(_image, imagePoints[i+4], imagePoints[4+(i+1)%4], Scalar(0, 255, 0), 2);
         line(_image, imagePoints[i], imagePoints[i+4], Scalar(255, 0, 0),2);
-
 
     }
 
@@ -137,14 +139,7 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
 }
 
 
-void record(string VideoFile, Mat input){
-    VideoWriter videoWriter(VideoFile,VideoWriter::fourcc('M', 'J', 'P', 'G'),30.0,input.size());
-    videoWriter.open(VideoFile,VideoWriter::fourcc('M', 'J', 'P', 'G'),30.0,input.size());
-    while(true){
-        videoWriter << input;
-    }
 
-}
 
 JNIEXPORT void JNICALL
 Java_com_keiko_nativecamera_CameraCalib_calibCamera(JNIEnv *env, jobject instance,
@@ -251,20 +246,23 @@ Java_com_keiko_nativecamera_CameraCalib_calibCamera(JNIEnv *env, jobject instanc
 }
 
 JNIEXPORT void JNICALL
-Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject instance,jstring DetecorParams_,jstring saveVideo_,jstring CameraParams_, jlong inPutAddr) {
+Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject instance,jstring DetecorParams_,jstring CameraParams_, jlong inPutAddr) {
 
     const char *CameraParamsFile = env->GetStringUTFChars(CameraParams_, NULL);
     const char *detectParamsFile = env->GetStringUTFChars(DetecorParams_, NULL);
-    const char *VideoFile = env->GetStringUTFChars(saveVideo_, NULL);
 
     Mat& inputImage = *(Mat*) inPutAddr;
 
-    bool estimatePose= true;
-    bool showRejected = false;
-    bool detectorParametrs = true;
+    Mat imageCopy,Blure;
+    Mat camMatrix, distCoeffs;
+
+    vector<int> ids;
+    vector<vector<Point2f> > corners, rejected;
+    vector<Vec3d> rvecs, tvecs;
+
+
 
     float markerLength=0.04;
-
 
     Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
     if(detectorParametrs) {
@@ -277,11 +275,9 @@ Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject insta
     }
     detectorParams->cornerRefinementMethod = aruco::CORNER_REFINE_CONTOUR; // do corner refinement in markers
 
-
     Ptr<aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME::DICT_6X6_250);
 
-        Mat imageCopy;
-        Mat camMatrix, distCoeffs;
+
 
         if(estimatePose) {
             bool readOk = readCameraParameters(CameraParamsFile, camMatrix, distCoeffs);
@@ -291,46 +287,37 @@ Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject insta
                 return;
             }
         }
-        vector<int> ids;
-        vector<vector<Point2f> > corners, rejected;
-        vector<Vec3d> rvecs, tvecs;
+
 
         // detect markers and estimate pose
         aruco::detectMarkers(inputImage, dictionary, corners, ids, detectorParams, rejected);
 
         if (estimatePose && ids.size() > 0) {
-
             estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs, tvecs);
             __android_log_print(ANDROID_LOG_INFO, "Marker Size id ", "Marker Size id = %lu",ids.size());
         }
+
         // draw results
         inputImage.copyTo(imageCopy);
 
-        vector<vector<Point>> contour;
 
         if (ids.size() > 0) {
             aruco::drawDetectedMarkers(imageCopy, corners, ids,Scalar(0,255,0));
             if (estimatePose) {
                 for (unsigned int i = 0; i < ids.size(); i++){
                     //aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
+                    /*Draw a cube*/
                    drawCube(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
                 }
             }
         }
-
         if (showRejected && rejected.size() > 0){
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
         }
+    //medianBlur(imageCopy,imageCopy,3);
 
-        // write the flipped frame
+    // write the flipped frame
         imageCopy.copyTo(inputImage);
-        //thread t1(record,VideoFile,imageCopy);
-        //t1.join();
-       // record(VideoFile,imageCopy);
-
-       // record(VideoFile,inputImage);
-
-/*Video Recording*/
 
 
     env->ReleaseStringUTFChars(CameraParams_, CameraParamsFile);
@@ -339,15 +326,31 @@ Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject insta
 
 
 
-JNIEXPORT jstring JNICALL
-Java_com_keiko_nativecamera_MainActivity_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+JNIEXPORT void JNICALL
+Java_com_keiko_nativecamera_CreateMarker_createMarker(JNIEnv *env, jobject instance, jstring out_) {
+    const char *out = env->GetStringUTFChars(out_, 0);
+
+    Ptr<Dictionary> dictionary = getPredefinedDictionary(PREDEFINED_DICTIONARY_NAME::DICT_6X6_250);
+    Mat markerImg;
+
+
+    for(int i=0;i<10;i++){
+        aruco::drawMarker(dictionary, i, 200, markerImg, 1);
+        ostringstream convert;
+        string imageName = "6x6marker_";
+        convert << imageName << i << ".jpg";
+        imwrite(out+convert.str(),markerImg);
+    }
+
+
+
+    //__android_log_print(ANDROID_LOG_INFO, "Convert: ","%s", convert);
+    __android_log_print(ANDROID_LOG_INFO, "Out: ","%s", out);
+
+    env->ReleaseStringUTFChars(out_, out);
 }
+
+
+
 }
-
-
-
 

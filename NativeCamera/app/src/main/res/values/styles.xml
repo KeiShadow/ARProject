@@ -20,4 +20,9 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="generalnotitle" parent="general">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="general"></style>
 </resources>

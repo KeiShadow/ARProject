@@ -58,7 +58,7 @@ public class CalibrationActivity extends AppCompatActivity implements CameraBrid
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.java_camera_view);
 
 
-        mOpenCvCameraView.setMaxFrameSize(1280, 720);
+        mOpenCvCameraView.setMaxFrameSize(720, 480);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 

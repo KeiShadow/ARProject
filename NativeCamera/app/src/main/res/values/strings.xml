@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Aruco Detection</string>
+    <string name="app_name">Projekt ArDetect</string>
     <string name="calibCamera">Kalibrace Kamry</string>
     <string name="action_settings">Tools</string>
     <string name="record_button">Record</string>
@@ -9,4 +9,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="detekce">Detekce</string>
     <string name="create_marker">Vytvoření markeru</string>
+    <string name="technicalQuest">Technický úkon</string>
+    <string name="nazevAkce">Název akce</string>
+    <string name="descAction">Popisek Akce</string>
+    <string name="startAction">Začít úkon</string>
 </resources>

@@ -25,7 +25,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp )
-
+#Opencv lib
 #add_library(lib_opencv SHARED IMPORTED)
 
 #set_target_properties(lib_opencv PROPERTIES IMPORTED_LOCATION src/main/jniLibs/${ANDROID_ABI}/libopencv_java3.so)
@@ -33,8 +33,10 @@ add_library( # Sets the name of the library.
 set(OpenCV_STATIC ON)
 set(OpenCV_DIR ../../ArucoOpenCV/sdk/native/jni)
 find_package(OpenCV REQUIRED)
-
 target_link_libraries(native-lib ${OpenCV_LIBS})
+
+
+
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -55,8 +57,8 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                    native-lib
-
-                   #lib_opencv
+                   android
+                   EGL
 
                    # Links the target library to the log library
                    # included in the NDK.
