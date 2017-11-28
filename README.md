@@ -11,3 +11,5 @@ Jedná se o aplikaci, která pomocí mobilní kamery detekuje aruco marker a na 
 - Native C++
 - Concurrency 
 - Sensors
+
+#[Video](https://youtu.be/g2e24wbrACc)
