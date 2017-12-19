@@ -1,6 +1,8 @@
 package com.keiko.nativecamera;
 
+import android.content.res.AssetManager;
 import android.hardware.Camera;
+import android.opengl.GLSurfaceView;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +31,10 @@ import org.opencv.photo.Photo;
 import org.opencv.videoio.VideoWriter;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 
 import static org.opencv.core.Core.BORDER_CONSTANT;
@@ -49,6 +54,8 @@ public class DetectionActivity extends AppCompatActivity implements CameraBridge
     String CameraParams = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Calib/CameraParams.yml";
     String DetectorParams = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Calib/DetectorParams.yml";
     String saveVideo =  Environment.getExternalStorageDirectory().getAbsolutePath();
+
+
 
     Button videoRecord;
     /*Creating camerabridgeview */
@@ -92,8 +99,10 @@ public class DetectionActivity extends AppCompatActivity implements CameraBridge
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.java_camera_view);
 
-        videoRecord.setOnClickListener(new View.OnClickListener(){
+        mOpenCvCameraView.setCvCameraViewListener(this);
 
+
+        videoRecord.setOnClickListener(new View.OnClickListener(){
             public void onClick(View arg0){
                 if (recording) {
                     recording = false;
@@ -227,4 +236,6 @@ public class DetectionActivity extends AppCompatActivity implements CameraBridge
             }
         }
     }
+
+
 }

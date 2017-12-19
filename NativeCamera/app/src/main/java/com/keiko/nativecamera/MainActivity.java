@@ -1,11 +1,20 @@
 package com.keiko.nativecamera;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -55,6 +64,60 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        MakeFiles();
+        copyAssets();
+
+    }
+
+    public void MakeFiles(){
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()+"/", "Calib");
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("App", "failed to create directory");
+            }
+        }else{
+            Toast.makeText(getApplicationContext(),"Soubor Vytvořen, nebo již existuje", Toast.LENGTH_LONG).show();
+        }
+
+    }
+    public  void copyAssets() {
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list("");
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        for(String filename : files) {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open(filename);
+                String outDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Calib" ;
+                File outFile = new File(outDir, filename);
+                if(!outFile.exists()){
+                    out = new FileOutputStream(outFile);
+                    copyFile(in, out);
+                    in.close();
+                    in = null;
+                    out.flush();
+                    out.close();
+                    out = null;
+                }else{
+                    // Toast.makeText(getApplicationContext(),"Soubor Vytvořen, nebo již existuje", Toast.LENGTH_LONG).show();
+                }
+
+            } catch(IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+            }
+        }
+    }
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
     }
 
 
