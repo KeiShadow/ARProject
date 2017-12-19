@@ -13,7 +13,7 @@ public class DetectMarker implements Runnable {
     public native void detectmarker(String DetectorParams, String CameraParams, long inPutAddr);
 
 
-    DetectMarker(String DetectorParams, String CameraParams, long inPutAddr){
+    public DetectMarker(String DetectorParams, String CameraParams, long inPutAddr){
         this.DetectorParams=DetectorParams;
         this.CameraParams = CameraParams;
         this.inPutAddr = inPutAddr;
