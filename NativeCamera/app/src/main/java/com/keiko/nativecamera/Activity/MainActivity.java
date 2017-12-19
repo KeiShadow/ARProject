@@ -1,4 +1,4 @@
-package com.keiko.nativecamera;
+package com.keiko.nativecamera.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.keiko.nativecamera.CreateMarker;
+import com.keiko.nativecamera.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

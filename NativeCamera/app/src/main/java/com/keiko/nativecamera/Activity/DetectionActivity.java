@@ -1,8 +1,5 @@
-package com.keiko.nativecamera;
+package com.keiko.nativecamera.Activity;
 
-import android.content.res.AssetManager;
-import android.hardware.Camera;
-import android.opengl.GLSurfaceView;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -10,37 +7,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
+import com.keiko.nativecamera.DetectMarker;
+import com.keiko.nativecamera.R;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.photo.Photo;
 import org.opencv.videoio.VideoWriter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 
-import static org.opencv.core.Core.BORDER_CONSTANT;
-import static org.opencv.core.Core.BORDER_DEFAULT;
-import static org.opencv.core.Core.BORDER_ISOLATED;
-import static org.opencv.core.Core.BORDER_REFLECT;
 import static org.opencv.photo.Photo.fastNlMeansDenoisingColored;
 import static org.opencv.photo.Photo.fastNlMeansDenoisingColoredMulti;
 import static org.opencv.videoio.Videoio.CV_CAP_PROP_FPS;

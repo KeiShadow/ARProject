@@ -28,7 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,11 +37,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetectionActivity"
+            android:name=".Activity.DetectionActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat" />
         <activity
-            android:name=".CalibrationActivity"
+            android:name=".Activity.CalibrationActivity"
             android:screenOrientation="landscape" />
     </application>
 

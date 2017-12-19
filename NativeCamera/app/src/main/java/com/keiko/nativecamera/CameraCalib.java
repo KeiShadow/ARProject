@@ -16,7 +16,7 @@ public class CameraCalib implements  Runnable {
 
     public native void calibCamera(String outputFile, long inputRgbaAddr);
 
-    CameraCalib(String outputFile, long inputRgbaAddr){
+    public CameraCalib(String outputFile, long inputRgbaAddr){
         this.outputFile = outputFile;
         this.inputRgbaAddr=inputRgbaAddr;
     }

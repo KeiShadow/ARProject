@@ -1,4 +1,4 @@
-package com.keiko.nativecamera;
+package com.keiko.nativecamera.Activity;
 
 import android.content.pm.ActivityInfo;
 import android.os.Environment;
@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
+
+import com.keiko.nativecamera.CameraCalib;
+import com.keiko.nativecamera.R;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
