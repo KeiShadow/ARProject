@@ -13,4 +13,6 @@
     <string name="nazevAkce">Název akce</string>
     <string name="descAction">Popisek Akce</string>
     <string name="startAction">Začít úkon</string>
+    <string name="login">Login: Nog0030</string>
+    <string name="created">Vytvořil: Petr Noga</string>
 </resources>

@@ -8,6 +8,7 @@ import com.keiko.nativecamera.R;
 public class AboutActivity extends AppCompatActivity {
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
