@@ -22,7 +22,7 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity{
     Button detekce,calibrate,createMarker,techAct;
-
+    Button about;
     String saveMarker = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Calib/";
 
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity{
         detekce=(Button)findViewById(R.id.bt_Det);
         calibrate=(Button)findViewById(R.id.bt_Calib);
         createMarker=(Button)findViewById(R.id.bt_Create);
-
+        about= (Button)findViewById(R.id.bt_about);
 
         detekce.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +66,14 @@ public class MainActivity extends AppCompatActivity{
                cm.createMarker(saveMarker);
             }
         });
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,AboutActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         MakeFiles();
         copyAssets();

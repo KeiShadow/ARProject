@@ -3,9 +3,10 @@ package com.keiko.nativecamera.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.keiko.nativecamera.R;
+
 public class AboutActivity extends AppCompatActivity {
 
-    Button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
