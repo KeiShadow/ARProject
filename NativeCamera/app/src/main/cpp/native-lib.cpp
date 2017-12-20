@@ -330,7 +330,7 @@ Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject insta
         aruco::drawDetectedMarkers(imageCopy, corners, ids, Scalar(0, 255, 0));
         if (estimatePose) {
             for (unsigned int i = 0; i < ids.size(); i++) {
-                //aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
+                drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
                 /*Draw a cube*/
                 drawCube(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
 
@@ -339,14 +339,40 @@ Java_com_keiko_nativecamera_DetectMarker_detectmarker(JNIEnv *env, jobject insta
         if (showRejected && rejected.size() > 0) {
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
         }
-        //medianBlur(imageCopy,imageCopy,3);
 
-        // write the flipped frame
+        medianBlur(imageCopy,imageCopy,3);
+
+        //write the flipped frame
         imageCopy.copyTo(inputImage);
 
 
         env->ReleaseStringUTFChars(CameraParams_, CameraParamsFile);
         env->ReleaseStringUTFChars(DetecorParams_, detectParamsFile);
+    }
+
+
+    JNIEXPORT void JNICALL
+    Java_com_keiko_nativecamera_CreateMarker_createMarker(JNIEnv *env, jobject instance, jstring out_) {
+        const char *out = env->GetStringUTFChars(out_, 0);
+
+        Ptr<Dictionary> dictionary = getPredefinedDictionary(PREDEFINED_DICTIONARY_NAME::DICT_6X6_250);
+        Mat markerImg;
+
+
+        for(int i=0;i<2;i++){
+            aruco::drawMarker(dictionary, i, 200, markerImg, 2);
+            ostringstream convert;
+            string imageName = "6x6markertest_";
+            convert << imageName << i << ".jpg";
+            imwrite(out+convert.str(),markerImg);
+        }
+
+
+
+        //__android_log_print(ANDROID_LOG_INFO, "Convert: ","%s", convert);
+        __android_log_print(ANDROID_LOG_INFO, "Out: ","%s", out);
+
+        env->ReleaseStringUTFChars(out_, out);
     }
 
 
